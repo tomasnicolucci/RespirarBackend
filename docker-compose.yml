@@ -1,0 +1,56 @@
+version: "3.5"
+services:
+  orion:
+    image: fiware/orion
+    hostname: orion
+    container_name: orion-fiware
+    depends_on:
+      - mongo-db
+    ports:
+      - "1026:1026"
+    command: -dbhost mongo-db -logLevel DEBUG -noCache
+  
+  mongo-db:
+    image: mongo:3.6
+    hostname: mongo-db
+    container_name: db-mongo
+    ports:
+      - "27017:27017" 
+    command: --bind_ip_all --smallfiles
+    volumes:
+      - mongo-db:/data
+
+  adminmongo:
+    image: mrvautin/adminmongo
+    ports:
+      - "1234:1234"
+    environment:
+      - HOST=0.0.0.0
+
+  mysql-db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    hostname: mysql-db
+    environment:
+      - "MYSQL_USER=root"
+      - "MYSQL_ROOT_PASSWORD=pass123"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-db:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      - "PMA_HOST=mysql-db"
+    depends_on:
+      - mysql-db
+    
+
+volumes:
+  mongo-db: ~
+  mysql-db: ~
