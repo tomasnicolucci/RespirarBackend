@@ -13,12 +13,12 @@ services:
   mongo-db:
     image: mongo:3.6
     hostname: mongo-db
-    container_name: db-mongo
+    container_name: db-mongo-Respirar
     ports:
       - "27017:27017" 
     command: --bind_ip_all --smallfiles
     volumes:
-      - mongo-db:/data
+      - ./volumes/mongo-db-volume:/data/db
 
   adminmongo:
     image: mrvautin/adminmongo
