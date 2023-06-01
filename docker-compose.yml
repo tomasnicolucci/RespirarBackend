@@ -35,8 +35,6 @@ services:
     hostname: mysql-db
     container_name: db-mysql1
     environment:
-      - "MYSQL_USER=admin"
-      - "MYSQL_PASSWORD=12345"
       - "MYSQL_ROOT_PASSWORD=secret"
     ports:
       - "3306:3306"
@@ -54,6 +52,26 @@ services:
     depends_on:
       - mysql-db
     
+  cygnus:
+    image: fiware/cygnus-ngsi
+    hostname: cygnus
+    container_name: cygnus-fiware
+    networks:
+      - default
+    depends_on:  
+      - mysql-db
+    ports:
+      - "5055:5055"
+      - "5080:5080"
+    environment:
+      - "CYGNUS_MYSQL_HOST=mysql-db"
+      - "CYGNUS_MYSQL_PORT=3306"
+      - "CYGNUS_MYSQL_USER=root"
+      - "CYGNUS_MYSQL_PASS=secret"
+      - "CYGNUS_MYSQL_SERVICE_PORT=5055"
+      - "CYGNUS_LOG_LEVEL=INFO"
+      - "CYGNUS_SERVICE_PORT=5055"
+      - "CYGNUS_API_PORT=5080"
 
 volumes:
   mongo-db: ~
