@@ -21,13 +21,4 @@ async function getEstacionById(id){
     }  
 }
 
-async function getAtributos(id){
-    try{
-        const temp = await axios.get("http://localhost:1026/v2/entities/" + id + "/attrs")
-        return temp.data
-    }catch(error){
-        return null
-    }
-}
-
-module.exports = {getEstaciones, getEstacionById, getAtributos}
+module.exports = {getEstaciones, getEstacionById}

@@ -1,41 +1,65 @@
-version: "3.5"
+version: "3.8"
 services:
   orion:
-    image: fiware/orion
+    image: quay.io/fiware/orion:3.8.1
     hostname: orion
-    container_name: orion-fiware
+    container_name: fiware-orion-Respirar
     depends_on:
       - mongo-db
+      - mysql-db
+    networks:
+      - default
     ports:
       - "1026:1026"
     command: -dbhost mongo-db -logLevel DEBUG -noCache
-  
+
+  cygnus:
+    image: quay.io/fiware/cygnus-ngsi:2.16.0
+    hostname: cygnus
+    container_name: fiware-cygnus-Respirar
+    depends_on:
+      - mysql-db
+    networks:
+      - default
+    expose:
+      - "5080"
+      - "5050"
+    ports:
+      - "5050:5050"
+      - "5080:5080"
+    environment:
+      - "CYGNUS_MYSQL_HOST=mysql-db"
+      - "CYGNUS_MYSQL_PORT=3306"
+      - "CYGNUS_MYSQL_USER=root"
+      - "CYGNUS_MYSQL_PASS=secret"
+      - "CYGNUS_MYSQL_DB=prueba"
+      - "CYGNUS_MYSQL_ENABLE_CACHE=true"
+      - "CYGNUS_SERVICE_PORT=5050"
+      - "CYGNUS_API_PORT=5080"
+      - "CYGNUS_LOG_LEVEL=DEBUG"
+
   mongo-db:
-    image: mongo:3.6
+    image: mongo:4.4
     hostname: mongo-db
     container_name: db-mongo-Respirar
+    expose:
+      - "27017"
     ports:
-      - "27017:27017" 
-    command: --bind_ip_all --smallfiles
+      - "27017:27017"
+    networks:
+      - default
     volumes:
-      - ./volumes/mongo-db-volume:/data/db
-
-  adminmongo:
-    image: mrvautin/adminmongo
-    container_name: adminmongo
-    ports:
-      - "1234:1234"
-    environment:
-      - HOST=0.0.0.0
-
+      - ./volumes/mongo-volume:/data/db
+  
   mysql-db:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     hostname: mysql-db
-    container_name: db-mysql1
+    container_name: db-mysql-Respirar
     environment:
-      - "MYSQL_ROOT_PASSWORD=secret"
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=prueba
     ports:
       - "3306:3306"
     volumes:
@@ -44,35 +68,23 @@ services:
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     restart: always
-    container_name: mysql-admin
+    container_name: mysql_admin
     ports:
       - "8080:80"
     environment:
       - "PMA_HOST=mysql-db"
     depends_on:
       - mysql-db
-    
-  cygnus:
-    image: fiware/cygnus-ngsi
-    hostname: cygnus
-    container_name: cygnus-fiware
-    networks:
-      - default
-    depends_on:  
-      - mysql-db
+
+  adminmongo:
+    image: mrvautin/adminmongo
+    container_name: mongo_admin
     ports:
-      - "5055:5055"
-      - "5080:5080"
+      - "1234:1234"
     environment:
-      - "CYGNUS_MYSQL_HOST=mysql-db"
-      - "CYGNUS_MYSQL_PORT=3306"
-      - "CYGNUS_MYSQL_USER=root"
-      - "CYGNUS_MYSQL_PASS=secret"
-      - "CYGNUS_MYSQL_SERVICE_PORT=5055"
-      - "CYGNUS_LOG_LEVEL=INFO"
-      - "CYGNUS_SERVICE_PORT=5055"
-      - "CYGNUS_API_PORT=5080"
+      - HOST=0.0.0.0
 
 volumes:
   mongo-db: ~
   mysql-db: ~
+  
