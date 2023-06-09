@@ -13,20 +13,10 @@ router.get('/estacion/:id', async (req, res) => {
 })
 
 //Datos historicos
-router.get('/historicos', async (req, res) => {
-    res.json(await dataHistorica.historicos());
-})
-
-router.get('/estMysql', async (req, res) => {
-    res.json(await dataHistorica.estMysql());
-})
-
-router.get('/estMysqlById/:id', async (req, res) => {
-    res.json(await dataHistorica.estMysqlById(req.params.id));
-})
-
-router.get('/getHistoricosById/:id', async (req, res) => {
-    res.json(await dataHistorica.getHistoricosById(req.params.id));
+router.get('/getHistoricosById/', async (req, res) => {
+    const {id, attr} = req.query
+    //console.log(req.query)
+    res.json(await dataHistorica.getHistoricosById(id, attr));
 })
 
 module.exports = router
