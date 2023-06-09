@@ -1,8 +1,11 @@
+require('dotenv').config();
 const axios = require('axios');
+
+const url_orion = (process.env.URL_ORION || "http://localhost:1026/v2/entities/") 
 
 async function getEstaciones(){
     try{
-        const estaciones = await axios.get("http://localhost:1026/v2/entities")
+        const estaciones = await axios.get(url_orion)
         return estaciones.data
     }
     catch(error){
@@ -13,7 +16,7 @@ async function getEstaciones(){
 
 async function getEstacionById(id){
     try{
-        const estacion = await axios.get("http://localhost:1026/v2/entities/" + id)
+        const estacion = await axios.get(url_orion + id)
         return estacion.data
     }catch(error){
         console.log('Error get estacion por id')
