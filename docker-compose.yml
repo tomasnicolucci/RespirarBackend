@@ -31,8 +31,8 @@ services:
       - "CYGNUS_MYSQL_HOST=mysql-db"
       - "CYGNUS_MYSQL_PORT=3306"
       - "CYGNUS_MYSQL_USER=root"
-      - "CYGNUS_MYSQL_PASS=secret"
-      - "CYGNUS_MYSQL_DB=prueba"
+      - "CYGNUS_MYSQL_PASS=${DB_PASS}"
+      - "CYGNUS_MYSQL_DB=prueba-respirar"
       - "CYGNUS_MYSQL_ENABLE_CACHE=true"
       - "CYGNUS_SERVICE_PORT=5050"
       - "CYGNUS_API_PORT=5080"
@@ -58,8 +58,8 @@ services:
     hostname: mysql-db
     container_name: db-mysql-Respirar
     environment:
-      - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_DATABASE=prueba
+      - MYSQL_ROOT_PASSWORD=${DB_PASS}
+      - MYSQL_DATABASE=prueba-respirar
     ports:
       - "3306:3306"
     volumes:
