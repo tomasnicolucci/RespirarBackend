@@ -1,8 +1,13 @@
 const express = require('express');
+require('dotenv').config();
 const path = require('path');
 
 const app = express()
+const port = (process.env.PORT || '3004')
+const actualesRouter = require('../routes/estacionesActuales')
+const historicosRouter = require('../routes/estacionesHistoricas')
 
-app.use(require('../routes/estaciones'));
+app.use('/', actualesRouter);
+app.use('/', historicosRouter);
 app.use(express.static(path.join(__dirname, 'public')));
-app.listen(3004, () => console.log('listening on port 3004'));
+app.listen(port, () => console.log(`listening on port ${port}`));
