@@ -2,23 +2,15 @@ require('dotenv').config();
 const sequelize = require('sequelize');
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const excelJS = require('exceljs');
+const conn = require('../dbConnection/mysqlConn')
 
-const connection = new sequelize(process.env.DATABASE, process.env.DB_USER, process.env.DB_PASS,{
-    host:'localhost',
-    dialect:'mysql'
-})
-
-try {
-    connection.authenticate();
-    console.log('Connection has been established successfully.');
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-}
 
 async function getHistoricosById(id, attr){
-    //console.log(id, attr)
+    
     const nombreTabla = id.replaceAll(':', '_') + '_Estacion'
-   
+    
+    const connection = await conn.getConnection()
+    
     const datosHistoricos = connection.define(nombreTabla, {
         "recvTime": sequelize.STRING,
         "entityId": sequelize.STRING,  
@@ -34,14 +26,12 @@ async function getHistoricosById(id, attr){
     await datosHistoricos.findAll({attributes:['recvTime','entityId', 'attrName', 'attrValue'], where: {entityId: id, attrName: attr}}) 
     .then(datos => {
     resultados = datos
-    //console.log(resultados)
     })
     return resultados
 }
 
 async function exportCsv(id, attr){
     const estacion = await getHistoricosById(id, attr);
-    //console.log(estacion)
   
     const csvWriter = createCsvWriter({
         path: 'data.csv',
@@ -53,7 +43,7 @@ async function exportCsv(id, attr){
         ]
     });
 
-    let records =[]
+    let records = []
     estacion.forEach(element => {
         let registro = {date: element.recvTime, entityId: element.entityId, attrName: element.attrName, attrValue: element.attrValue};
         records.push(registro);  
@@ -66,7 +56,6 @@ async function exportCsv(id, attr){
 
 async function exportExcel(id, attr){
     const estacion = await getHistoricosById(id, attr);
-    //console.log(estacion)
     
     const workbook = new excelJS.Workbook();
     const fileName = 'data.xlsx'
@@ -95,7 +84,6 @@ async function exportExcel(id, attr){
     workbook.xlsx.writeFile(fileName).then(() => {
         console.log('Descargando Excel');
     });
-    
 }
 
 module.exports = {getHistoricosById, exportCsv, exportExcel}
