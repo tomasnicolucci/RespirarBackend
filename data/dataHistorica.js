@@ -30,6 +30,22 @@ async function getHistoricosById(id, attr){
     return resultados
 }
 
+async function getHistoricosByIdFecha(id, attr, fMin, fMax){
+    const dataEstacion = await getHistoricosById(id, attr);
+    let dataFiltrada = [];
+    dataEstacion.forEach(element => {
+        let day = element.recvTime.getDate();
+        let month = element.recvTime.getMonth();
+        let year = element.recvTime.getYear();
+        let fecha = `${day}/${month}/${year}`
+        console.log(fecha);
+        if(fecha >= fMin && fecha <= fMax){
+            dataFiltrada.push(element);
+        }
+    })
+    return dataFiltrada;
+}
+
 async function exportCsv(id, attr){
     const estacion = await getHistoricosById(id, attr);
   
@@ -86,4 +102,4 @@ async function exportExcel(id, attr){
     });
 }
 
-module.exports = {getHistoricosById, exportCsv, exportExcel}
+module.exports = {getHistoricosById, getHistoricosByIdFecha, exportCsv, exportExcel}
