@@ -4,8 +4,8 @@ async function getHistoricosById(id, attr) {
     return datosHistoricos.getHistoricosById(id, attr);
 }
 
-async function getHistoricosByIdFecha(id, attr, fMin, fMax) {
-    return datosHistoricos.getHistoricosByIdFecha(id, attr, fMin, fMax);
+async function getHistoricosByIdFecha(id, attr, minDate, maxDate) {
+    return datosHistoricos.getHistoricosByIdFecha(id, attr, minDate, maxDate);
 }
 
 async function exportCsv(id, attr) {

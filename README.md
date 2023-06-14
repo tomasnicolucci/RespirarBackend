@@ -16,6 +16,7 @@ Datos actuales (mongodb - orion)
 
 Datos Históricos (MySql) 
 - GET: http://localhost:3004/getHistoricosById/?id=[id]&attr=[attr]  devuelve los datos históricos del atributo y de la estación solicitada por parámetro
+- GET: http://localhost:3004/getHistoricosById/?id=[id]&attr=[attr]&minDate=[mm/dd/yyyy]&maxDate=[mm/dd/yyyy]  devuelve los datos históricos del atributo y de la estación solicitada por parámetro, entre las fechas seleccionadas.
 
 Exportación de datos históricos
 - GET: http://localhost:3004/exportCsv/?id=[id]&attr=[attr]         exporta un archivo csv con los datos históricos
