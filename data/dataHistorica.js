@@ -23,23 +23,27 @@ async function getHistoricosById(id, attr){
     });
 
     let resultados;
-    await datosHistoricos.findAll({attributes:['recvTime','entityId', 'attrName', 'attrValue'], where: {entityId: id, attrName: attr}}) 
+    await datosHistoricos.findAll({attributes:['recvTime','entityId', 'attrName', 'attrType', 'attrValue'], where: {entityId: id, attrName: attr}}) 
     .then(datos => {
     resultados = datos
     })
     return resultados
 }
 
-async function getHistoricosByIdFecha(id, attr, fMin, fMax){
+async function getHistoricosByIdFecha(id, attr, minDate, maxDate){
     const dataEstacion = await getHistoricosById(id, attr);
+    const dateMin = new Date(minDate);
+    const dateMax = new Date(maxDate);
     let dataFiltrada = [];
+
     dataEstacion.forEach(element => {
-        let day = element.recvTime.getDate();
-        let month = element.recvTime.getMonth();
-        let year = element.recvTime.getYear();
-        let fecha = `${day}/${month}/${year}`
-        console.log(fecha);
-        if(fecha >= fMin && fecha <= fMax){
+        let date = new Date(element.recvTime);
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getYear() + 1900;
+        let fecha = new Date(`${month}/${day}/${year}`)
+        
+        if(fecha >= dateMin && fecha <= dateMax){
             dataFiltrada.push(element);
         }
     })
