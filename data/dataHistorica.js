@@ -1,7 +1,5 @@
 require('dotenv').config();
 const sequelize = require('sequelize');
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-const excelJS = require('exceljs');
 const conn = require('../dbConnection/mysqlConn')
 
 
